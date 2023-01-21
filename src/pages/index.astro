@@ -1,16 +1,42 @@
 ---
-import ExampleContent from '../components/ExampleContent.astro'
+import ExampleContent from '../components/ExampleContent.astro';
+import { Preact } from '../components/Preact';
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<ExampleContent />
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    Try hard-reloading the page if it doesnt happen first try<br />
+    <br />
+    <button data-cool-button>Set data</button>
+    <Preact client:load>
+      <ExampleContent />
+    </Preact>
+    <script>
+      import { user } from '../state/example';
+
+      user.setKey('loggedIn', false);
+
+      function setData(name: string) {
+        user.set({
+          name,
+          loggedIn: true,
+        });
+      }
+
+      const buttons = document.querySelectorAll('[data-cool-button]');
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => setData('changed'));
+      });
+
+      setTimeout(() => setData('automatic'), 200);
+    </script>
+  </body>
 </html>
